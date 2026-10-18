@@ -1,0 +1,56 @@
+[
+  {
+    "src": "photos/hedgehog.webp",
+    "original": "photos/original/hedgehog.png",
+    "title": "Осенний гость",
+    "alt": "Ёж среди жёлтых осенних листьев",
+    "category": "ПРИРОДА",
+    "width": 1365,
+    "height": 2048
+  },
+  {
+    "src": "photos/tower.webp",
+    "original": "photos/original/tower.jpg",
+    "title": "Свет за ветвями",
+    "alt": "Освещённая башня со снегом, обрамлённая ветвями деревьев",
+    "category": "АРХИТЕКТУРА",
+    "width": 1364,
+    "height": 2048
+  },
+  {
+    "src": "photos/forest.webp",
+    "original": "photos/original/forest.jpg",
+    "title": "След присутствия",
+    "alt": "Большая шина среди деревьев в зелёном лесу",
+    "category": "НАБЛЮДЕНИЯ",
+    "width": 1364,
+    "height": 2048
+  },
+  {
+    "src": "photos/lantern.webp",
+    "original": "photos/original/lantern.jpg",
+    "title": "Тёплая зима",
+    "alt": "Фонарь с иероглифом на фоне заснеженной стены в тёплом свете",
+    "category": "ДЕТАЛИ",
+    "width": 1364,
+    "height": 2048
+  },
+  {
+    "src": "photos/dog.webp",
+    "original": "photos/original/dog.jpg",
+    "title": "Внимательный взгляд",
+    "alt": "Крупный портрет бело-рыжей собаки с большими ушами",
+    "category": "ЖИВОТНЫЕ",
+    "width": 2048,
+    "height": 1364
+  },
+  {
+    "src": "photos/tree.webp",
+    "original": "photos/original/tree.jpg",
+    "title": "Раны леса",
+    "alt": "Ствол с полостью и оранжевой древесиной в тёмном лесу",
+    "category": "ПРИРОДА",
+    "width": 1364,
+    "height": 2048
+  }
+]
