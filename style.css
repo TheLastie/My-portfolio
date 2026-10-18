@@ -8,3 +8,7 @@
 .motion-art svg{display:block;width:min(90%,360px);height:90%;max-width:100%;max-height:100%}
 @media(max-width:1000px){.project{grid-template-columns:30px minmax(0,1fr) minmax(0,30%)}}
 @media(max-width:720px){.project{grid-template-columns:25px minmax(0,1fr)}.project-art{width:100%;min-width:0}.motion-art svg{width:min(94%,260px);height:94%}}
+
+/* Stable brand mark across emoji and fallback fonts. */
+.brand .brand-mark{width:36px;height:36px;display:inline-grid;place-items:center;flex:0 0 36px;border-radius:7px;background:#00c83d;line-height:1;letter-spacing:0;color:#fff}.brand .brand-mark svg{display:block;width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter}.brand .brand-mark svg path{fill:none}.brand{gap:8px}
+@media(max-width:720px){.brand .brand-mark{width:33px;height:33px;flex-basis:33px;border-radius:6px}.brand .brand-mark svg{width:24px;height:24px}}

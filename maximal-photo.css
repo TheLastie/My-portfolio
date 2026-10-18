@@ -45,3 +45,7 @@
 .photo-viewer.image-missing .viewer-stage>.viewer-fallback{display:grid}
 .viewer-fallback b{font:normal clamp(70px,12vw,130px)/1 Arial,sans-serif;color:#fa5a2c}
 @media(max-width:720px){.viewer-fallback{height:100%;min-width:0}.viewer-fallback small{font-size:7px}}
+
+/* Mobile: keep the photo frames expressive while clearing artwork away from captions. */
+.journal-seal .journal-star{font-size:0;line-height:1;display:grid;place-items:center}.journal-seal .journal-star svg{display:block;width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:3.5;stroke-linecap:butt}.satellite-page .photo-item figcaption{position:relative;isolation:isolate;min-width:0}.satellite-page .photo-item figcaption>*:not(.scene-number){position:relative;z-index:1}.satellite-page .scene-number{z-index:0;pointer-events:none}
+@media(max-width:720px){.satellite-page .frame-sprig{display:none!important}.satellite-page .photo-item figcaption{overflow-wrap:anywhere}.satellite-page .scene-number{top:-28px;left:0;font-size:78px;opacity:.08}.satellite-page .journal-seal .journal-star svg{width:23px;height:23px}}
