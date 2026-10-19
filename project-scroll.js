@@ -137,8 +137,9 @@
     let resizeFrame = 0;
     window.addEventListener('message', event => {
       if (event.source !== preview.contentWindow || event.data?.type !== 'lastie:preview-size') return;
-      const height = Math.ceil(Number(event.data.height));
-      if (!Number.isFinite(height) || height < 1 || height > 16000) return;
+      const reportedHeight = Math.ceil(Number(event.data.height));
+      if (!Number.isFinite(reportedHeight) || reportedHeight < 1 || reportedHeight > 16000) return;
+      const height = Math.max(560, reportedHeight);
       previewScreen?.classList.remove('lab-screen--opaque-origin');
       previewScreen?.classList.add('lab-screen--fit-content');
       preview.style.height = `${height}px`;
@@ -186,8 +187,9 @@
       } catch {
         sizeObserver?.disconnect();
         previewScreen?.classList.remove('lab-screen--fit-content');
-        preview.style.height = '1px';
-        if (previewScreen) previewScreen.style.height = '1px';
+        const fallbackHeight = Math.max(560, Math.min(760, Math.ceil(window.innerHeight)));
+        preview.style.height = `${fallbackHeight}px`;
+        if (previewScreen) previewScreen.style.height = `${fallbackHeight}px`;
         previewScreen?.classList.add('lab-screen--opaque-origin');
       }
     };
