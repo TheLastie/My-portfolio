@@ -32,7 +32,7 @@
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('project-scroll.css', document.currentScript.src).href;
+  stylesheet.href = new URL('project-scroll.css?v=3', document.currentScript.src).href;
   document.head.append(stylesheet);
 
   const pageHeader = document.querySelector('.header');
@@ -52,6 +52,9 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let syncingFromScroll = false;
   let activeId = '';
+  let tabNavigationId = '';
+  let tabNavigationTimer = 0;
+  const releaseTabNavigation = () => { tabNavigationId = ''; clearTimeout(tabNavigationTimer); };
 
   const articles = projects.map((project, index) => {
     const tab = tabs.querySelector(`#lab-tab-${project.id}`);
@@ -118,7 +121,12 @@
     tab.setAttribute('aria-controls', article.id);
     tab.dataset.projectId = project.id;
     tab.addEventListener('click', () => {
-      if (!syncingFromScroll) article.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
+      if (syncingFromScroll) return;
+      tabNavigationId = project.id;
+      clearTimeout(tabNavigationTimer);
+      tabNavigationTimer = setTimeout(releaseTabNavigation, 2400);
+      mount({ project, tab, article, slot });
+      article.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
     });
     tab.addEventListener('keydown', () => requestAnimationFrame(() => {
       const selected = tabs.querySelector('[aria-selected="true"]');
@@ -220,6 +228,11 @@
   const observer = new IntersectionObserver(entries => {
     const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
     const id = visible[0]?.target.dataset.projectId;
+    if (tabNavigationId) {
+      const selected = articles.find(entry => entry.project.id === tabNavigationId);
+      if (selected) mount(selected);
+      return;
+    }
     const item = articles.find(entry => entry.project.id === id);
     if (item) mount(item);
   }, { rootMargin: '-38% 0px -38% 0px', threshold: [0, 0.15, 0.35, 0.6, 1] });
