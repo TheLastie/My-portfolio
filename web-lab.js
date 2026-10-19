@@ -1,26 +1,23 @@
 (() => {
   const scriptUrl = document.currentScript?.src;
   const root = new URL('.', scriptUrl || location.href);
-  if (!document.querySelector('link[rel="stylesheet"][href*="web-lab.css"]')) {
-    const stylesheet = document.createElement('link');
-    stylesheet.rel = 'stylesheet';
-    stylesheet.href = new URL('web-lab.css?v=4', root).href;
-    document.head.append(stylesheet);
-  }
-
+  const stylesheet = document.createElement('link');
+  stylesheet.rel = 'stylesheet';
+  stylesheet.href = new URL('web-lab.css', root).href;
+  document.head.append(stylesheet);
   const section = document.querySelector('#web-lab');
   if (!section) return;
   document.querySelector('#work')?.before(section);
   const isEnglish = document.documentElement.lang.toLowerCase().startsWith('en');
   const projects = [
-    { id: 'levelseed', name: 'LevelSeed', url: 'https://thelastie.github.io/levelseed/', repo: 'levelseed', type: ['MAP GENERATION', 'ALGORITHMS'], typeRu: ['ГЕНЕРАЦИЯ КАРТ', 'АЛГОРИТМЫ'], about: 'Build expansive worlds and watch procedural terrain take shape.', aboutRu: 'Собирайте большие миры и наблюдайте, как алгоритмы создают рельеф.' },
-    { id: 'pathfinding-visualizer', name: 'Pathfinding Visualizer', url: 'https://thelastie.github.io/pathfinding-visualizer/', repo: 'pathfinding-visualizer', type: ['SEARCH', 'VISUALIZATION'], typeRu: ['ПОИСК ПУТИ', 'ВИЗУАЛИЗАЦИЯ'], about: 'Compare how pathfinding algorithms search through a maze.', aboutRu: 'Сравнивайте, как алгоритмы ищут путь через лабиринт.' },
-    { id: 'branchbook', name: 'Branchbook', url: 'https://thelastie.github.io/branchbook/', repo: 'branchbook', type: ['INTERACTIVE STORY', 'SOUND'], typeRu: ['ИНТЕРАКТИВНАЯ ИСТОРИЯ', 'ЗВУК'], about: 'A branching story where each choice changes the journey.', aboutRu: 'История с развилками, где каждый выбор меняет путь.' },
-    { id: 'photo-terrain', name: 'Photo Terrain', url: 'https://thelastie.github.io/photo-terrain/', repo: 'photo-terrain', type: ['PHOTOGRAPHY', '3D'], typeRu: ['ФОТОГРАФИЯ', '3D'], about: 'Turn a photograph into a landscape you can explore.', aboutRu: 'Превратите фотографию в ландшафт для исследования.' },
-    { id: 'tonal', name: 'Tonal', url: 'https://thelastie.github.io/tonal/', repo: 'tonal', type: ['IMAGE ANALYSIS', 'COLOUR'], typeRu: ['АНАЛИЗ ИЗОБРАЖЕНИЙ', 'ЦВЕТ'], about: 'Extract a considered colour palette from an image.', aboutRu: 'Извлекайте цельную цветовую палитру из изображения.' },
-    { id: 'exposure-lab', name: 'Exposure Lab', url: 'https://thelastie.github.io/Exposure-Lab/', repo: 'Exposure-Lab', type: ['CAMERA', 'SIMULATION'], typeRu: ['КАМЕРА', 'СИМУЛЯЦИЯ'], about: 'Explore how exposure, focus and colour shape a frame.', aboutRu: 'Исследуйте, как экспозиция, фокус и цвет меняют кадр.' },
-    { id: 'pixel-animation-studio', name: 'Pixel Animation Studio', url: 'https://thelastie.github.io/pixel-animation-studio/', repo: 'pixel-animation-studio', type: ['PIXEL ART', 'GIF'], typeRu: ['ПИКСЕЛЬ-АРТ', 'GIF'], about: 'Draw frame by frame and export a finished GIF.', aboutRu: 'Рисуйте покадрово и экспортируйте готовую GIF-анимацию.' },
-    { id: 'plant-growth', name: 'Silva · Plant Growth', url: 'https://thelastie.github.io/plant-growth/', repo: 'plant-growth', type: ['BOTANY', 'GENERATION'], typeRu: ['БОТАНИКА', 'ГЕНЕРАЦИЯ'], about: 'Grow branching plants and study their changing forms.', aboutRu: 'Выращивайте ветвящиеся растения и изучайте их форму.' }
+    { id: 'levelseed', name: 'LevelSeed', url: 'https://thelastie.github.io/levelseed/', repo: 'levelseed', type: ['LEVEL DESIGN', 'PLAYABLE WORLDS'], typeRu: ['ДИЗАЙН УРОВНЕЙ', 'ИГРОВОЙ МИР'], about: 'Build repeatable dungeon levels, then enter the same world and fight through to its boss.', aboutRu: 'Соберите повторяемое подземелье, войдите в тот же мир и доберитесь до босса.' },
+    { id: 'pathfinding-visualizer', name: 'Pathfinding Visualizer', url: 'https://thelastie.github.io/pathfinding-visualizer/', repo: 'pathfinding-visualizer', type: ['GAME NAVIGATION', 'JSON EXPORT'], typeRu: ['НАВИГАЦИЯ УРОВНЯ', 'ЭКСПОРТ JSON'], about: 'Test whether a game level is traversable; export the tested grid and route as JSON.', aboutRu: 'Проверьте, достижим ли выход на игровом уровне, и скачайте карту с маршрутом в JSON.' },
+    { id: 'branchbook', name: 'Branchbook', url: 'https://thelastie.github.io/branchbook/', repo: 'branchbook', type: ['BRANCHING FICTION', '8 ENDINGS'], typeRu: ['ИСТОРИЯ С ВЫБОРОМ', '8 ИСХОДОВ'], about: 'Guide a lighthouse crew through three days before a storm, using field notes and choices that lead to eight endings.', aboutRu: 'Помогите команде маяка пережить три дня до шторма: сопоставляйте записи и доведите решения до одного из восьми исходов.' },
+    { id: 'photo-terrain', name: 'Photo Terrain', url: 'https://thelastie.github.io/photo-terrain/', repo: 'photo-terrain', type: ['3D BLOCKOUT', 'OBJ / PNG'], typeRu: ['ЧЕРНОВОЙ 3D-УРОВЕНЬ', 'OBJ / PNG'], about: "Turn a photograph's brightness into a relative heightfield. Export a mesh or height map for a 3D blockout.", aboutRu: 'Создайте условный рельеф по яркости фотографии, сохраните сетку или карту высот для чернового 3D-уровня.' },
+    { id: 'tonal', name: 'Tonal', url: 'https://thelastie.github.io/tonal/', repo: 'tonal', type: ['DESIGN PALETTE', 'CSS / JSON'], typeRu: ['ЦВЕТА ДЛЯ ДИЗАЙНА', 'CSS / JSON'], about: 'Pull a usable colour set from a photo and take it into a design as CSS variables or JSON.', aboutRu: 'Извлеките рабочую палитру из фотографии и перенесите её в проект через CSS-переменные или JSON.' },
+    { id: 'exposure-lab', name: 'Exposure Lab', url: 'https://thelastie.github.io/Exposure-Lab/', repo: 'Exposure-Lab', type: ['CAMERA', 'FIELD NOTES'], typeRu: ['КАМЕРА', 'ЗАМЕТКИ СЪЁМКИ'], about: 'Rehearse a camera setup across scenes, see focus and white-balance changes, and save settings as a field note.', aboutRu: 'Подберите настройки для разных условий, оцените фокус и баланс белого, сохраните параметры кадра заметкой.' },
+    { id: 'pixel-animation-studio', name: 'Pixel Animation Studio', url: 'https://thelastie.github.io/pixel-animation-studio/', repo: 'pixel-animation-studio', type: ['SPRITE WORKFLOW', 'GIF EXPORT'], typeRu: ['АНИМАЦИЯ СПРАЙТОВ', 'ЭКСПОРТ GIF'], about: 'Create a looping sprite, then export a GIF or sprite sheet for a game or small web animation.', aboutRu: 'Создайте зацикленный спрайт и экспортируйте GIF или лист кадров для игры и веб-анимации.' },
+    { id: 'plant-growth', name: 'Silva · Plant Growth', url: 'https://thelastie.github.io/plant-growth/', repo: 'plant-growth', type: ['BOTANICAL REFERENCES', 'GROWTH STUDIES'], typeRu: ['БОТАНИЧЕСКИЕ РЕФЕРЕНСЫ', 'РОСТ И ФОРМА'], about: 'Explore how age, light, water, and wind change a plant’s branching form; save the generated reference.', aboutRu: 'Посмотрите, как возраст, свет, влага и ветер меняют ветвление растения; сохраните получившийся референс.' }
   ];
   const copy = isEnglish ? { number: 'DEMO', status: 'Interactive preview. Use the project tabs to switch between experiments.', showPhone: 'Preview at phone width', showWide: 'Return to full-width preview' } : { number: 'ДЕМО', status: 'Интерактивный предпросмотр. Переключайтесь между проектами во вкладках.', showPhone: 'Предпросмотр в ширине телефона', showWide: 'Вернуть широкое окно предпросмотра' };
   const tabs = section.querySelector('[role="tablist"]');
@@ -34,8 +31,6 @@
   const source = section.querySelector('[data-lab-source]');
   const status = section.querySelector('[data-lab-status]');
   const screen = section.querySelector('.lab-screen');
-  screen.dataset.loadingLabel = isEnglish ? 'Loading project preview…' : 'Загружается проект…';
-  frame.addEventListener('load', () => screen.classList.remove('is-loading'));
   const viewToggle = section.querySelector('[data-lab-view-toggle]');
   let storedId = null;
   try { storedId = localStorage.getItem('lastie-web-lab-project'); } catch { /* storage is optional */ }
@@ -71,7 +66,7 @@
     const localPreview = ['localhost', '127.0.0.1'].includes(location.hostname) && localFolders[project.id]
       ? new URL(`../${localFolders[project.id]}/`, location.href).href
       : project.url;
-    if (frame.src !== localPreview) { screen.classList.add('is-loading'); frame.src = localPreview; }
+    if (frame.src !== localPreview) frame.src = localPreview;
     open.href = project.url;
     source.href = `https://github.com/TheLastie/${project.repo}`;
     status.textContent = copy.status;
@@ -108,5 +103,4 @@
   });
   updateViewToggle();
   render();
-  section.querySelector('.lab-fallback')?.setAttribute('hidden', '');
 })();
