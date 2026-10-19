@@ -31,6 +31,8 @@ export function initWebLab() {
   const source = section.querySelector('[data-lab-source]');
   const status = section.querySelector('[data-lab-status]');
   const screen = section.querySelector('.lab-screen');
+  screen.dataset.loadingLabel = isEnglish ? 'Loading project preview…' : 'Загружается проект…';
+  frame.addEventListener('load', () => screen.classList.remove('is-loading'));
   const viewToggle = section.querySelector('[data-lab-view-toggle]');
   let storedId = null;
   try { storedId = localStorage.getItem('lastie-web-lab-project'); } catch { /* storage is optional */ }
@@ -66,7 +68,10 @@ export function initWebLab() {
     const localPreview = ['localhost', '127.0.0.1'].includes(location.hostname) && localFolders[project.id]
       ? new URL(`../${localFolders[project.id]}/`, location.href).href
       : project.url;
-    if (frame.src !== localPreview) frame.src = localPreview;
+    if (frame.src !== localPreview) {
+      screen.classList.add('is-loading');
+      frame.src = localPreview;
+    }
     open.href = project.url;
     source.href = `https://github.com/TheLastie/${project.repo}`;
     status.textContent = copy.status;

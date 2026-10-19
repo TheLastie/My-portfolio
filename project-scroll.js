@@ -52,6 +52,7 @@ export function initProjectScroll() {
   projectList.setAttribute('aria-label', isEnglish ? 'Projects' : 'Проекты');
   shell.append(projectList);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const compactQuery = window.matchMedia('(max-width: 900px)');
   let syncingFromScroll = false;
   let activeId = '';
   let tabNavigationId = '';
@@ -124,10 +125,17 @@ export function initProjectScroll() {
     tab.dataset.projectId = project.id;
     tab.addEventListener('click', () => {
       if (syncingFromScroll) return;
+      const item = { project, tab, article, slot };
+      if (compactQuery.matches) {
+        tabNavigationId = '';
+        articles.forEach(entry => { entry.article.hidden = entry !== item; });
+        mount(item);
+        return;
+      }
       tabNavigationId = project.id;
       clearTimeout(tabNavigationTimer);
-      tabNavigationTimer = setTimeout(releaseTabNavigation, 2400);
-      mount({ project, tab, article, slot });
+      tabNavigationTimer = setTimeout(releaseTabNavigation, 6000);
+      mount(item);
       article.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
     });
     tab.addEventListener('keydown', () => requestAnimationFrame(() => {
@@ -222,12 +230,19 @@ export function initProjectScroll() {
     syncingFromScroll = true;
     item.tab.click();
     syncingFromScroll = false;
+    const changed = activeId !== '' && activeId !== item.project.id;
     item.slot.querySelector('[data-marker]')?.remove();
+    if (changed) main.classList.add('lab-main--arriving');
     item.slot.append(main);
-    articles.forEach(entry => entry.article.classList.toggle('is-current', entry === item));
+    if (changed) requestAnimationFrame(() => main.classList.remove('lab-main--arriving'));
+    articles.forEach(entry => {
+      entry.article.classList.toggle('is-current', entry === item);
+      entry.article.hidden = compactQuery.matches && entry !== item;
+    });
   };
 
   const observer = new IntersectionObserver(entries => {
+    if (compactQuery.matches) return;
     const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
     const id = visible[0]?.target.dataset.projectId;
     if (tabNavigationId) {
@@ -238,7 +253,19 @@ export function initProjectScroll() {
     const item = articles.find(entry => entry.project.id === id);
     if (item) mount(item);
   }, { rootMargin: '-38% 0px -38% 0px', threshold: [0, 0.15, 0.35, 0.6, 1] });
-  articles.forEach(item => observer.observe(item.article));
   const stored = (() => { try { return localStorage.getItem('lastie-web-lab-project'); } catch { return ''; } })();
-  mount(articles.find(item => item.project.id === stored) || articles[0]);
+  const initial = articles.find(item => item.project.id === stored) || articles[0];
+  if (compactQuery.matches) articles.forEach(item => { item.article.hidden = item !== initial; });
+  else articles.forEach(item => observer.observe(item.article));
+  compactQuery.addEventListener('change', () => {
+    const selected = articles.find(item => item.tab.getAttribute('aria-selected') === 'true') || initial;
+    if (compactQuery.matches) {
+      observer.disconnect();
+      articles.forEach(item => { item.article.hidden = item !== selected; });
+      mount(selected);
+    } else {
+      articles.forEach(item => { item.article.hidden = false; observer.observe(item.article); });
+    }
+  });
+  mount(initial);
 }
