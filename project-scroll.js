@@ -139,10 +139,12 @@
     const previewScreen = preview.closest('.lab-screen');
     let sizeObserver;
     let resizeFrame = 0;
+    const allowedPreviewOrigins = new Set(['https://thelastie.github.io', 'http://127.0.0.1:8768', 'http://localhost:8768']);
     window.addEventListener('message', event => {
       if (event.source !== preview.contentWindow || event.data?.type !== 'lastie:preview-size') return;
+      if (!allowedPreviewOrigins.has(event.origin)) return;
       const height = Math.ceil(Number(event.data.height));
-      if (!Number.isFinite(height) || height < 1 || height > 16000) return;
+      if (!Number.isFinite(height) || height < 200 || height > 16000) return;
       previewScreen?.classList.remove('lab-screen--opaque-origin');
       previewScreen?.classList.add('lab-screen--fit-content');
       preview.style.height = `${height}px`;
@@ -190,9 +192,13 @@
       } catch {
         sizeObserver?.disconnect();
         previewScreen?.classList.remove('lab-screen--fit-content');
-        preview.style.height = '1px';
-        if (previewScreen) previewScreen.style.height = '1px';
         previewScreen?.classList.add('lab-screen--opaque-origin');
+        const fallbackHeight = Math.max(720, Math.ceil(window.innerHeight * 0.85));
+        preview.style.height = `${fallbackHeight}px`;
+        if (previewScreen) previewScreen.style.height = `${fallbackHeight}px`;
+        const slot = preview.closest('.lab-project-preview-slot');
+        if (slot) slot.style.minHeight = `${fallbackHeight}px`;
+        preview.contentWindow?.postMessage({ type: 'lastie:request-preview-size' }, '*');
       }
     };
     preview.removeAttribute('scrolling');
