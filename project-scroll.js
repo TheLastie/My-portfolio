@@ -32,7 +32,7 @@
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('project-scroll.css?v=3', document.currentScript.src).href;
+  stylesheet.href = new URL('project-scroll.css', document.currentScript.src).href;
   document.head.append(stylesheet);
 
   const pageHeader = document.querySelector('.header');
@@ -50,12 +50,11 @@
   projectList.setAttribute('aria-label', isEnglish ? 'Projects' : 'Проекты');
   shell.append(projectList);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const compactQuery = window.matchMedia('(max-width: 900px)');
   let syncingFromScroll = false;
   let activeId = '';
-  let tabNavigationId = '';
-  let tabNavigationTimer = 0;
-  const releaseTabNavigation = () => { tabNavigationId = ''; clearTimeout(tabNavigationTimer); };
+  let manualSelectionId = '';
+  let manualReleaseTimer = 0;
+  let manualScrollEndListener = null;
 
   const articles = projects.map((project, index) => {
     const tab = tabs.querySelector(`#lab-tab-${project.id}`);
@@ -122,23 +121,12 @@
     tab.setAttribute('aria-controls', article.id);
     tab.dataset.projectId = project.id;
     tab.addEventListener('click', () => {
-      if (syncingFromScroll) return;
-      const item = { project, tab, article, slot };
-      if (compactQuery.matches) {
-        tabNavigationId = '';
-        articles.forEach(entry => { entry.article.hidden = entry !== item; });
-        mount(item);
-        return;
-      }
-      tabNavigationId = project.id;
-      clearTimeout(tabNavigationTimer);
-      tabNavigationTimer = setTimeout(releaseTabNavigation, 6000);
-      mount(item);
-      article.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
+      if (!syncingFromScroll) selectArticle(articles.find(entry => entry.project.id === project.id));
     });
     tab.addEventListener('keydown', () => requestAnimationFrame(() => {
       const selected = tabs.querySelector('[aria-selected="true"]');
-      if (selected?.dataset.projectId) document.querySelector(`#lab-project-${selected.dataset.projectId}`)?.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
+      const item = articles.find(entry => entry.project.id === selected?.dataset.projectId);
+      if (item) selectArticle(item);
     }));
     return { project, tab, article, slot };
   }).filter(Boolean);
@@ -153,9 +141,8 @@
     let resizeFrame = 0;
     window.addEventListener('message', event => {
       if (event.source !== preview.contentWindow || event.data?.type !== 'lastie:preview-size') return;
-      const reportedHeight = Math.ceil(Number(event.data.height));
-      if (!Number.isFinite(reportedHeight) || reportedHeight < 1 || reportedHeight > 16000) return;
-      const height = Math.max(560, reportedHeight);
+      const height = Math.ceil(Number(event.data.height));
+      if (!Number.isFinite(height) || height < 1 || height > 16000) return;
       previewScreen?.classList.remove('lab-screen--opaque-origin');
       previewScreen?.classList.add('lab-screen--fit-content');
       preview.style.height = `${height}px`;
@@ -203,9 +190,8 @@
       } catch {
         sizeObserver?.disconnect();
         previewScreen?.classList.remove('lab-screen--fit-content');
-        const fallbackHeight = Math.max(560, Math.min(760, Math.ceil(window.innerHeight)));
-        preview.style.height = `${fallbackHeight}px`;
-        if (previewScreen) previewScreen.style.height = `${fallbackHeight}px`;
+        preview.style.height = '1px';
+        if (previewScreen) previewScreen.style.height = '1px';
         previewScreen?.classList.add('lab-screen--opaque-origin');
       }
     };
@@ -228,42 +214,42 @@
     syncingFromScroll = true;
     item.tab.click();
     syncingFromScroll = false;
-    const changed = activeId !== '' && activeId !== item.project.id;
     item.slot.querySelector('[data-marker]')?.remove();
-    if (changed) main.classList.add('lab-main--arriving');
     item.slot.append(main);
-    if (changed) requestAnimationFrame(() => main.classList.remove('lab-main--arriving'));
-    articles.forEach(entry => {
-      entry.article.classList.toggle('is-current', entry === item);
-      entry.article.hidden = compactQuery.matches && entry !== item;
-    });
+    articles.forEach(entry => entry.article.classList.toggle('is-current', entry === item));
+  };
+
+  const clearManualSelection = () => {
+    if (manualReleaseTimer) window.clearTimeout(manualReleaseTimer);
+    manualReleaseTimer = 0;
+    manualSelectionId = '';
+    if (manualScrollEndListener) document.removeEventListener('scrollend', manualScrollEndListener);
+    manualScrollEndListener = null;
+  };
+
+  const selectArticle = item => {
+    if (!item) return;
+    clearManualSelection();
+    manualSelectionId = item.project.id;
+    manualScrollEndListener = clearManualSelection;
+    document.addEventListener('scrollend', manualScrollEndListener, { once: true, passive: true });
+    manualReleaseTimer = window.setTimeout(clearManualSelection, 1800);
+    mount(item);
+    item.article.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
   };
 
   const observer = new IntersectionObserver(entries => {
-    if (compactQuery.matches) return;
-    const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-    const id = visible[0]?.target.dataset.projectId;
-    if (tabNavigationId) {
-      const selected = articles.find(entry => entry.project.id === tabNavigationId);
-      if (selected) mount(selected);
+    if (manualSelectionId) {
+      const item = articles.find(entry => entry.project.id === manualSelectionId);
+      if (item) mount(item);
       return;
     }
+    const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+    const id = visible[0]?.target.dataset.projectId;
     const item = articles.find(entry => entry.project.id === id);
     if (item) mount(item);
   }, { rootMargin: '-38% 0px -38% 0px', threshold: [0, 0.15, 0.35, 0.6, 1] });
+  articles.forEach(item => observer.observe(item.article));
   const stored = (() => { try { return localStorage.getItem('lastie-web-lab-project'); } catch { return ''; } })();
-  const initial = articles.find(item => item.project.id === stored) || articles[0];
-  if (compactQuery.matches) articles.forEach(item => { item.article.hidden = item !== initial; });
-  else articles.forEach(item => observer.observe(item.article));
-  compactQuery.addEventListener('change', () => {
-    const selected = articles.find(item => item.tab.getAttribute('aria-selected') === 'true') || initial;
-    if (compactQuery.matches) {
-      observer.disconnect();
-      articles.forEach(item => { item.article.hidden = item !== selected; });
-      mount(selected);
-    } else {
-      articles.forEach(item => { item.article.hidden = false; observer.observe(item.article); });
-    }
-  });
-  mount(initial);
+  mount(articles.find(item => item.project.id === stored) || articles[0]);
 })();
