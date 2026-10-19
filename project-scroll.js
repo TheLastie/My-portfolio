@@ -224,13 +224,13 @@ export function initProjectScroll() {
 
   const mount = item => {
     if (activeId === item.project.id && main.parentElement === item.slot) return;
+    const changed = activeId !== '' && activeId !== item.project.id;
     const previousSlot = main.parentElement;
     if (previousSlot && previousSlot !== item.slot) previousSlot.style.minHeight = '';
     activeId = item.project.id;
     syncingFromScroll = true;
     item.tab.click();
     syncingFromScroll = false;
-    const changed = activeId !== '' && activeId !== item.project.id;
     item.slot.querySelector('[data-marker]')?.remove();
     if (changed) main.classList.add('lab-main--arriving');
     item.slot.append(main);
