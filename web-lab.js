@@ -1,10 +1,12 @@
 (() => {
   const scriptUrl = document.currentScript?.src;
   const root = new URL('.', scriptUrl || location.href);
-  const stylesheet = document.createElement('link');
-  stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('web-lab.css?v=3', root).href;
-  document.head.append(stylesheet);
+  if (!document.querySelector('link[rel="stylesheet"][href*="web-lab.css"]')) {
+    const stylesheet = document.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = new URL('web-lab.css?v=4', root).href;
+    document.head.append(stylesheet);
+  }
 
   const section = document.querySelector('#web-lab');
   if (!section) return;
@@ -106,4 +108,5 @@
   });
   updateViewToggle();
   render();
+  section.querySelector('.lab-fallback')?.setAttribute('hidden', '');
 })();
