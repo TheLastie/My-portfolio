@@ -3,7 +3,7 @@
   const root = new URL('.', scriptUrl || location.href);
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('web-lab.css', root).href;
+  stylesheet.href = new URL('web-lab.css?v=3', root).href;
   document.head.append(stylesheet);
 
   const section = document.querySelector('#web-lab');
