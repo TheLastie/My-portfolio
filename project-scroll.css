@@ -111,3 +111,14 @@ html{overflow-x:hidden}
 @keyframes preview-label-in{from{opacity:0}to{opacity:1}}
 @media(max-width:900px){.lab-project-step[hidden]{display:none!important}}
 @media(prefers-reduced-motion:reduce){.lab-main,.lab-main .lab-screen iframe,.lab-main .lab-screen.is-loading::after{transition:none;animation:none}}
+
+/* Calm project changes and keep mobile selection under the visitor's control. */
+.lab-main{transition:opacity .28s ease,transform .28s ease}
+.lab-main.lab-main--arriving{opacity:0;transform:translateY(9px)}
+.lab-main .lab-screen{position:relative}
+.lab-main .lab-screen iframe{transition:opacity .28s ease,filter .28s ease}
+.lab-main .lab-screen.is-loading iframe{opacity:.12;filter:blur(1.5px)}
+.lab-main .lab-screen.is-loading::after{content:attr(data-loading-label);position:absolute;inset:0;z-index:2;display:grid;place-items:center;background:color-mix(in srgb,var(--lab-bg) 64%,transparent);color:var(--lab-muted);font:10px var(--mono);letter-spacing:.04em;pointer-events:none;animation:preview-label-in .2s ease both}
+@keyframes preview-label-in{from{opacity:0}to{opacity:1}}
+@media(max-width:900px){.lab-project-step[hidden]{display:none!important}}
+@media(prefers-reduced-motion:reduce){.lab-main,.lab-main .lab-screen iframe,.lab-main .lab-screen.is-loading::after{transition:none;animation:none}}

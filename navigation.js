@@ -1,7 +1,5 @@
 import {initApp} from './app.js';
 import {initGallery} from './gallery.js';
-import {initWebLab} from './web-lab.js';
-import {initProjectScroll} from './project-scroll.js';
 
 const routes=new Set(['/index.html','/photo.html','/programming.html','/en/index.html','/en/photo.html','/en/programming.html']);
 const cache=new Map();
@@ -25,7 +23,28 @@ function routeOf(value){
 }
 function readPositions(){try{const saved=JSON.parse(sessionStorage.getItem('lastie-scroll')||'{}');for(const [route,y]of Object.entries(saved))if(routes.has(route)&&Number.isFinite(y))positions.set(route,Math.max(0,y));}catch{}}
 function savePosition(){if(!currentRoute)return;positions.set(currentRoute,window.scrollY);try{sessionStorage.setItem('lastie-scroll',JSON.stringify(Object.fromEntries(positions)));}catch{}}
-function mountPage(){cleanups=[initApp(),initGallery()];if(document.querySelector('#web-lab')){initWebLab();initProjectScroll();}}
+function mountPage(){cleanups=[initApp(),initGallery()];mountProjectGallery();}
+function mountProjectGallery(){
+ const section=document.querySelector('#web-lab');
+ const tabs=section?.querySelector('.lab-tabs');
+ if(!section||!tabs||tabs.querySelector('[role="tab"]')||section.dataset.galleryBoot==='loading'||section.dataset.galleryBoot==='loaded')return;
+ section.dataset.galleryBoot='loading';
+ const loadScript=src=>new Promise((resolve,reject)=>{
+  const script=document.createElement('script');
+  script.src=new URL(src,import.meta.url).href;
+  script.onload=resolve;
+  script.onerror=()=>reject(new Error('Project gallery script failed to load'));
+  document.head.append(script);
+ });
+ loadScript('./web-lab.js?v=4').then(()=>{
+  if(!tabs.querySelector('[role="tab"]'))throw new Error('Project tabs were not initialized');
+  return loadScript('./project-scroll.js?v=4');
+ }).then(()=>{section.dataset.galleryBoot='loaded';}).catch(()=>{
+  section.dataset.galleryBoot='failed';
+  const status=section.querySelector('[data-lab-status]');
+  if(status)status.textContent=document.documentElement.lang==='en'?'Could not load project previews. Please refresh the page.':'Не удалось загрузить предпросмотр проектов. Обновите страницу.';
+ });
+}
 function loadPage(route){
  if(cache.has(route))return cache.get(route);
  const promise=fetch(new URL(route,location.origin),{credentials:'same-origin',headers:{Accept:'text/html'}}).then(async response=>{

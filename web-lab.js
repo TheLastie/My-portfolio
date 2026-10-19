@@ -1,12 +1,13 @@
-export function initWebLab() {
-  const section = document.querySelector('#web-lab');
-  if (!section || section.dataset.webLabInitialized === 'true') return;
-  section.dataset.webLabInitialized = 'true';
+(() => {
+  const scriptUrl = document.currentScript?.src;
+  const root = new URL('.', scriptUrl || location.href);
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('web-lab.css?v=3', import.meta.url).href;
+  stylesheet.href = new URL('web-lab.css?v=3', root).href;
   document.head.append(stylesheet);
 
+  const section = document.querySelector('#web-lab');
+  if (!section) return;
   document.querySelector('#work')?.before(section);
   const isEnglish = document.documentElement.lang.toLowerCase().startsWith('en');
   const projects = [
@@ -68,10 +69,7 @@ export function initWebLab() {
     const localPreview = ['localhost', '127.0.0.1'].includes(location.hostname) && localFolders[project.id]
       ? new URL(`../${localFolders[project.id]}/`, location.href).href
       : project.url;
-    if (frame.src !== localPreview) {
-      screen.classList.add('is-loading');
-      frame.src = localPreview;
-    }
+    if (frame.src !== localPreview) { screen.classList.add('is-loading'); frame.src = localPreview; }
     open.href = project.url;
     source.href = `https://github.com/TheLastie/${project.repo}`;
     status.textContent = copy.status;
@@ -108,4 +106,4 @@ export function initWebLab() {
   });
   updateViewToggle();
   render();
-}
+})();

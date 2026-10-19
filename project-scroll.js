@@ -1,11 +1,9 @@
-export function initProjectScroll() {
+(() => {
   const section = document.querySelector('#web-lab');
-  if (section?.dataset.projectScrollInitialized === 'true') return;
   const tabs = section?.querySelector('.lab-tabs');
   const shell = section?.querySelector('.lab-shell');
   const main = section?.querySelector('.lab-main');
   if (!section || !tabs || !shell || !main) return;
-  section.dataset.projectScrollInitialized = 'true';
 
   const isEnglish = document.documentElement.lang.toLowerCase().startsWith('en');
   const projects = [
@@ -34,7 +32,7 @@ export function initProjectScroll() {
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('project-scroll.css?v=3', import.meta.url).href;
+  stylesheet.href = new URL('project-scroll.css?v=3', document.currentScript.src).href;
   document.head.append(stylesheet);
 
   const pageHeader = document.querySelector('.header');
@@ -224,13 +222,13 @@ export function initProjectScroll() {
 
   const mount = item => {
     if (activeId === item.project.id && main.parentElement === item.slot) return;
-    const changed = activeId !== '' && activeId !== item.project.id;
     const previousSlot = main.parentElement;
     if (previousSlot && previousSlot !== item.slot) previousSlot.style.minHeight = '';
     activeId = item.project.id;
     syncingFromScroll = true;
     item.tab.click();
     syncingFromScroll = false;
+    const changed = activeId !== '' && activeId !== item.project.id;
     item.slot.querySelector('[data-marker]')?.remove();
     if (changed) main.classList.add('lab-main--arriving');
     item.slot.append(main);
@@ -268,4 +266,4 @@ export function initProjectScroll() {
     }
   });
   mount(initial);
-}
+})();
