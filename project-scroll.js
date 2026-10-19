@@ -42,7 +42,7 @@
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('project-scroll.css', document.currentScript.src).href;
+  stylesheet.href = new URL('project-scroll.css?v=7', document.currentScript.src).href;
   document.head.append(stylesheet);
 
   const pageHeader = document.querySelector('.header');
