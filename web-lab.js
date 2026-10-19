@@ -1,13 +1,12 @@
-(() => {
-  const scriptUrl = document.currentScript?.src;
-  const root = new URL('.', scriptUrl || location.href);
+export function initWebLab() {
+  const section = document.querySelector('#web-lab');
+  if (!section || section.dataset.webLabInitialized === 'true') return;
+  section.dataset.webLabInitialized = 'true';
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('web-lab.css?v=3', root).href;
+  stylesheet.href = new URL('web-lab.css?v=3', import.meta.url).href;
   document.head.append(stylesheet);
 
-  const section = document.querySelector('#web-lab');
-  if (!section) return;
   document.querySelector('#work')?.before(section);
   const isEnglish = document.documentElement.lang.toLowerCase().startsWith('en');
   const projects = [
@@ -104,4 +103,4 @@
   });
   updateViewToggle();
   render();
-})();
+}

@@ -1,5 +1,7 @@
 import {initApp} from './app.js';
 import {initGallery} from './gallery.js';
+import {initWebLab} from './web-lab.js';
+import {initProjectScroll} from './project-scroll.js';
 
 const routes=new Set(['/index.html','/photo.html','/programming.html','/en/index.html','/en/photo.html','/en/programming.html']);
 const cache=new Map();
@@ -23,7 +25,7 @@ function routeOf(value){
 }
 function readPositions(){try{const saved=JSON.parse(sessionStorage.getItem('lastie-scroll')||'{}');for(const [route,y]of Object.entries(saved))if(routes.has(route)&&Number.isFinite(y))positions.set(route,Math.max(0,y));}catch{}}
 function savePosition(){if(!currentRoute)return;positions.set(currentRoute,window.scrollY);try{sessionStorage.setItem('lastie-scroll',JSON.stringify(Object.fromEntries(positions)));}catch{}}
-function mountPage(){cleanups=[initApp(),initGallery()];}
+function mountPage(){cleanups=[initApp(),initGallery()];if(document.querySelector('#web-lab')){initWebLab();initProjectScroll();}}
 function loadPage(route){
  if(cache.has(route))return cache.get(route);
  const promise=fetch(new URL(route,location.origin),{credentials:'same-origin',headers:{Accept:'text/html'}}).then(async response=>{

@@ -1,9 +1,11 @@
-(() => {
+export function initProjectScroll() {
   const section = document.querySelector('#web-lab');
+  if (section?.dataset.projectScrollInitialized === 'true') return;
   const tabs = section?.querySelector('.lab-tabs');
   const shell = section?.querySelector('.lab-shell');
   const main = section?.querySelector('.lab-main');
   if (!section || !tabs || !shell || !main) return;
+  section.dataset.projectScrollInitialized = 'true';
 
   const isEnglish = document.documentElement.lang.toLowerCase().startsWith('en');
   const projects = [
@@ -32,7 +34,7 @@
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('project-scroll.css?v=3', document.currentScript.src).href;
+  stylesheet.href = new URL('project-scroll.css?v=3', import.meta.url).href;
   document.head.append(stylesheet);
 
   const pageHeader = document.querySelector('.header');
@@ -239,4 +241,4 @@
   articles.forEach(item => observer.observe(item.article));
   const stored = (() => { try { return localStorage.getItem('lastie-web-lab-project'); } catch { return ''; } })();
   mount(articles.find(item => item.project.id === stored) || articles[0]);
-})();
+}
