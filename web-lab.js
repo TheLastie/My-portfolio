@@ -68,7 +68,13 @@
     const localPreview = ['localhost', '127.0.0.1'].includes(location.hostname) && localFolders[project.id]
       ? new URL(`../${localFolders[project.id]}/`, location.href).href
       : project.url;
-    if (frame.src !== localPreview) frame.src = localPreview;
+    if (frame.src !== localPreview) {
+      frame.style.height = '';
+      screen.style.height = '';
+      const previewSlot = frame.closest('.lab-project-preview-slot');
+      if (previewSlot) previewSlot.style.minHeight = '';
+      frame.src = localPreview;
+    }
     open.href = project.url;
     source.href = `https://github.com/TheLastie/${project.repo}`;
     status.textContent = copy.status;
