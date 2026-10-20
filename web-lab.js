@@ -96,6 +96,7 @@
     });
     tabs.append(tab);
   });
+  section.querySelector('.lab-fallback')?.setAttribute('hidden', '');
   section.querySelector('[data-lab-reload]').addEventListener('click', () => { frame.src = 'about:blank'; requestAnimationFrame(() => { frame.src = projects[activeIndex].url; }); });
   viewToggle.addEventListener('click', () => {
     phoneMode = !phoneMode;
