@@ -54,7 +54,7 @@
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('project-scroll.css?v=7', document.currentScript.src).href;
+  stylesheet.href = new URL('project-scroll.css?v=9', document.currentScript.src).href;
   document.head.append(stylesheet);
 
   const pageHeader = document.querySelector('.header');
@@ -72,6 +72,7 @@
   projectList.setAttribute('aria-label', isEnglish ? 'Projects' : 'Проекты');
   shell.append(projectList);
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const initialProjectId = new URL(location.href).searchParams.get('demo');
   let syncingFromScroll = false;
   let activeId = '';
   let manualSelectionId = '';
@@ -250,37 +251,50 @@
     articles.forEach(entry => entry.article.classList.toggle('is-current', entry === item));
   };
 
+  let manualScrollListener = null;
   const clearManualSelection = () => {
     if (manualReleaseTimer) window.clearTimeout(manualReleaseTimer);
     manualReleaseTimer = 0;
     manualSelectionId = '';
     if (manualScrollEndListener) document.removeEventListener('scrollend', manualScrollEndListener);
+    if (manualScrollListener) window.removeEventListener('scroll', manualScrollListener);
     manualScrollEndListener = null;
+    manualScrollListener = null;
   };
 
   const selectArticle = item => {
     if (!item) return;
     clearManualSelection();
     manualSelectionId = item.project.id;
+    let hasScrolled = false;
+    manualScrollListener = () => {
+      hasScrolled = true;
+      if (manualReleaseTimer) window.clearTimeout(manualReleaseTimer);
+      manualReleaseTimer = window.setTimeout(clearManualSelection, 220);
+    };
     manualScrollEndListener = clearManualSelection;
+    window.addEventListener('scroll', manualScrollListener, { passive: true });
     document.addEventListener('scrollend', manualScrollEndListener, { once: true, passive: true });
-    manualReleaseTimer = window.setTimeout(clearManualSelection, 1800);
     mount(item);
     item.article.scrollIntoView({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' });
+    manualReleaseTimer = window.setTimeout(() => {
+      if (!hasScrolled) clearManualSelection();
+    }, 700);
   };
 
-  const observer = new IntersectionObserver(entries => {
-    if (manualSelectionId) {
-      const item = articles.find(entry => entry.project.id === manualSelectionId);
-      if (item) mount(item);
-      return;
-    }
-    const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-    const id = visible[0]?.target.dataset.projectId;
-    const item = articles.find(entry => entry.project.id === id);
+  const observer = new IntersectionObserver(() => {
+    if (manualSelectionId) return;
+    const focusLine = window.innerHeight * 0.46;
+    const item = articles
+      .map(entry => ({ entry, rect: entry.article.getBoundingClientRect() }))
+      .filter(({ rect }) => rect.bottom > focusLine && rect.top < window.innerHeight)
+      .sort((a, b) => Math.abs(a.rect.top - focusLine) - Math.abs(b.rect.top - focusLine))[0]?.entry;
     if (item) mount(item);
-  }, { rootMargin: '-38% 0px -38% 0px', threshold: [0, 0.15, 0.35, 0.6, 1] });
+  }, { rootMargin: '-30% 0px -30% 0px', threshold: [0, 0.1, 0.25, 0.5, 1] });
   articles.forEach(item => observer.observe(item.article));
-  const stored = (() => { try { return localStorage.getItem('lastie-web-lab-project'); } catch { return ''; } })();
-  mount(articles.find(item => item.project.id === stored) || articles[0]);
+  const initialItem = articles.find(item => item.project.id === initialProjectId) || articles[0];
+  mount(initialItem);
+  if (initialProjectId && initialItem !== articles[0]) {
+    requestAnimationFrame(() => initialItem.article.scrollIntoView({ behavior: 'instant', block: 'start' }));
+  }
 })();
