@@ -3,7 +3,7 @@
   const root = new URL('.', scriptUrl || location.href);
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('web-lab.css?v=7', root).href;
+  stylesheet.href = new URL('web-lab.css?v=9', root).href;
   document.head.append(stylesheet);
   const section = document.querySelector('#web-lab');
   if (!section) return;
@@ -36,10 +36,8 @@
   const status = section.querySelector('[data-lab-status]');
   const screen = section.querySelector('.lab-screen');
   const viewToggle = section.querySelector('[data-lab-view-toggle]');
-  let storedId = null;
-  try { storedId = localStorage.getItem('lastie-web-lab-project'); } catch { /* storage is optional */ }
   const queryId = new URL(location.href).searchParams.get('demo');
-  let activeIndex = Math.max(0, projects.findIndex(p => p.id === (queryId || storedId)));
+  let activeIndex = Math.max(0, projects.findIndex(p => p.id === queryId));
   let phoneMode = false;
   try { phoneMode = localStorage.getItem('lastie-web-lab-device') === 'phone'; } catch { /* storage is optional */ }
 
