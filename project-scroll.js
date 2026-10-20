@@ -14,7 +14,11 @@
     { id: 'tonal', repo: 'tonal', en: 'Build an interface palette from a photograph and test its contrast.', ru: 'Соберите палитру интерфейса из фотографии и проверьте её читаемость.' },
     { id: 'exposure-lab', repo: 'Exposure-Lab', en: 'Balance a real scene’s exposure, focus, and color before a shoot.', ru: 'Подберите экспозицию, фокус и цвет для сцены перед съёмкой.' },
     { id: 'pixel-animation-studio', repo: 'pixel-animation-studio', en: 'Create a sprite animation ready for a game or webpage.', ru: 'Подготовьте анимацию спрайта для игры или веб-страницы.' },
-    { id: 'plant-growth', repo: 'plant-growth', en: 'Compare plant forms for a specific scene and keep the study options.', ru: 'Сравните формы растений для конкретной сцены и сохраните варианты.' }
+    { id: 'plant-growth', repo: 'plant-growth', en: 'Compare plant forms for a specific scene and keep the study options.', ru: 'Сравните формы растений для конкретной сцены и сохраните варианты.' },
+    { id: 'waymark', repo: 'Waymark', en: 'Compare routes by mobility needs and organize field checks for street barriers.', ru: 'Сравните маршруты для разных способов передвижения и соберите заметки для проверки улиц.' },
+    { id: 'waterline', repo: 'Waterline', en: 'Test flood-risk scenarios for a coastal district and see which local measures change the result.', ru: 'Проверьте сценарии для прибрежного района и сравните, как на результат влияют локальные меры защиты.' },
+    { id: 'mendbook', repo: 'Mendbook', en: 'Keep a practical ownership and repair history for the things you want to maintain.', ru: 'Ведите историю владения и ремонта вещей, которые хотите сохранить.' },
+    { id: 'slatehouse', repo: 'Slatehouse', en: 'Plan a shootable day for a small crew and prepare its call sheet.', ru: 'Составьте выполнимый съёмочный план для небольшой команды и подготовьте call sheet.' }
   ];
   const outcomes = {
     'levelseed': { en: 'Take away: a replayable level, its seed, and a map to playtest.', ru: 'На выходе: повторяемый уровень, его seed и карта для плейтеста.' },
@@ -24,7 +28,11 @@
     'tonal': { en: 'Take away: image-based color tokens, checked for readable contrast.', ru: 'На выходе: палитра из снимка и проверка контраста для интерфейса.' },
     'exposure-lab': { en: 'Take away: a tested exposure setup and a field note for the next shoot.', ru: 'На выходе: проверенные настройки экспозиции и заметка для следующей съёмки.' },
     'pixel-animation-studio': { en: 'Take away: a GIF or sprite sheet ready for a game or webpage.', ru: 'На выходе: GIF или лист спрайтов для игры или сайта.' },
-    'plant-growth': { en: 'Take away: saved plant studies you can compare and share with a team.', ru: 'На выходе: сохранённые варианты растения для сравнения и обсуждения с командой.' }
+    'plant-growth': { en: 'Take away: saved plant studies you can compare and share with a team.', ru: 'На выходе: сохранённые варианты растения для сравнения и обсуждения с командой.' },
+    'waymark': { en: 'Take away: a route comparison with confirmed and unknown barriers clearly marked.', ru: 'На выходе: сравнение маршрутов с отмеченными препятствиями и местами, которые ещё нужно проверить.' },
+    'waterline': { en: 'Take away: a side-by-side scenario brief with its assumptions attached.', ru: 'На выходе: сравнение сценариев с условиями и допущениями, от которых зависит результат.' },
+    'mendbook': { en: 'Take away: a local item history and a portable JSON backup.', ru: 'На выходе: локальная история вещи и переносимая резервная копия JSON.' },
+    'slatehouse': { en: 'Take away: a shooting schedule and a print-ready call sheet.', ru: 'На выходе: съёмочное расписание и готовый к печати call sheet.' }
   };
   const projectIcons = {
     'levelseed': 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%23171b20%27/%3E%3Cpath d=%27M16 5v22M5 16h22M8 8l16 16M24 8 8 24%27 stroke=%27%23d6f36a%27 stroke-width=%273%27/%3E%3C/svg%3E',
@@ -34,7 +42,11 @@
     'tonal': 'https://thelastie.github.io/tonal/favicon.svg',
     'exposure-lab': 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Crect width=%2740%27 height=%2740%27 rx=%2712%27 fill=%27%23d4f36a%27/%3E%3Cpath d=%27M20 7 32 29H8z%27 fill=%27none%27 stroke=%27%23111411%27 stroke-width=%272%27/%3E%3Ccircle cx=%2720%27 cy=%2722%27 r=%274%27 fill=%27%23111411%27/%3E%3C/svg%3E',
     'pixel-animation-studio': 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Cpath fill=%27%23ff6a4f%27 d=%27M5 5h8v8H5zm14 0h8v8h-8zM5 19h8v8H5zm14 0h8v8h-8z%27/%3E%3C/svg%3E',
-    'plant-growth': 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Cpath d=%27M20 35V19M20 25C11 24 7 19 8 10c8-1 13 3 12 12m0 3c1-9 6-13 14-12 0 8-4 13-14 14%27 fill=%27none%27 stroke=%27%232c5942%27 stroke-width=%273%27 stroke-linecap=%27round%27/%3E%3C/svg%3E'
+    'plant-growth': 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Cpath d=%27M20 35V19M20 25C11 24 7 19 8 10c8-1 13 3 12 12m0 3c1-9 6-13 14-12 0 8-4 13-14 14%27 fill=%27none%27 stroke=%27%232c5942%27 stroke-width=%273%27 stroke-linecap=%27round%27/%3E%3C/svg%3E',
+    'waymark': 'https://thelastie.github.io/Waymark/favicon.svg',
+    'waterline': 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M2%2011c4%200%204-4%208-4s4%206%208%206%204-7%208-7%204%205%206%205M2%2021c4%200%204-4%208-4s4%206%208%206%204-7%208-7%204%205%206%205%22%20fill%3D%22none%22%20stroke%3D%22%23438a92%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E',
+    'mendbook': 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20x%3D%226%22%20y%3D%224%22%20width%3D%2220%22%20height%3D%2224%22%20rx%3D%223%22%20fill%3D%22none%22%20stroke%3D%22%23bc775b%22%20stroke-width%3D%222%22%2F%3E%3Cpath%20d%3D%22M11%2010h10M11%2015h6M17%2024l8-8%203%203-8%208-4%201z%22%20fill%3D%22none%22%20stroke%3D%22%23bc775b%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22round%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E',
+    'slatehouse': 'data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Cpath%20d%3D%22M4%209h24v18H4zM4%209l5-5h24l-5%205M12%204l-4%205m12-5-4%205m12-5-4%205%22%20fill%3D%22none%22%20stroke%3D%22%23d1b56c%22%20stroke-width%3D%222%22%20stroke-linejoin%3D%22round%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E'
   };
   const copy = isEnglish
     ? { rail: 'PROJECTS', project: 'PROJECT', open: 'Open project', source: 'Source code', hint: 'Scroll to explore' }
