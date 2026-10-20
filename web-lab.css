@@ -120,3 +120,21 @@
 @media(max-width:720px){.lab-screen[data-device=phone]{background:var(--lab-bg);background-image:none;padding:0}.lab-screen[data-device=phone] iframe{width:100%;border:0;box-shadow:none}.lab-control[data-lab-view-toggle]{display:none}}
 @media(max-width:520px){.web-lab{padding-inline:15px;padding-block:45px}.web-lab .section-heading{display:block;margin:20px 0 25px}.web-lab .section-heading h2{font-size:clamp(36px,10vw,48px);letter-spacing:-1.8px}.web-lab .section-heading>p{margin-top:13px;font-size:12px}.lab-rail{margin-inline:-15px;padding-inline:15px}.lab-tabs [role=tab]{min-width:142px;min-height:55px;padding-inline:9px}.lab-tab-name{font-size:11px}.lab-tab-domain{font-size:7px}.lab-main{padding:10px}.lab-toolbar{min-height:49px;gap:8px}.lab-topline{font-size:8px}.lab-controls{gap:5px}.lab-control{width:42px;height:42px}.lab-screen{height:74vh;height:74svh;min-height:520px}.lab-meta{padding-top:15px;gap:15px}.lab-meta h3{font-size:24px}.lab-meta p{font-size:12px}.lab-tags{margin-top:9px}.lab-tags span{font-size:8px}.lab-links{display:grid;grid-template-columns:1fr 1fr;gap:8px}.lab-link{justify-content:center;padding-inline:8px;font-size:10px}}
 @media(max-width:850px){.lab-shell{grid-template-columns:minmax(0,1fr)}.lab-shell>*{min-width:0}.lab-rail,.lab-main{width:100%;min-width:0}.lab-tabs{width:100%;max-width:100%;min-width:0}.lab-screen{width:100%;min-width:0}.lab-screen iframe{min-width:0;max-width:100%}.lab-meta,.lab-links{min-width:0}}
+
+
+/* On narrow screens, keep project choice to one readable control above the preview. */
+.lab-mobile-picker{display:none}
+@media(max-width:720px){
+  .lab-rail-label{display:none}
+  .lab-tabs{display:none!important}
+  .lab-mobile-picker{display:grid;gap:6px;width:100%;min-width:0}
+  .lab-mobile-picker-caption{font:600 11px/1.3 var(--mono);letter-spacing:.1em;color:var(--lab-muted)}
+  .lab-mobile-picker select{width:100%;min-height:50px;padding:0 40px 0 13px;border:1px solid var(--lab-line);border-radius:2px;background-color:var(--lab-surface);color:var(--lab-ink);font:600 16px/1.2 inherit;cursor:pointer}
+  .lab-mobile-picker select:focus-visible{outline:2px solid var(--lab-accent);outline-offset:2px}
+  .lab-rail{padding:10px 13px 12px}
+  .lab-screen{height:70svh;min-height:420px}
+}
+@media(max-width:520px){
+  .lab-mobile-picker select{min-height:48px;font-size:16px}
+  .lab-screen{height:70svh;min-height:400px}
+}
