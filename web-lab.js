@@ -3,7 +3,7 @@
   const root = new URL('.', scriptUrl || location.href);
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('web-lab.css', root).href;
+  stylesheet.href = new URL('web-lab.css?v=6', root).href;
   document.head.append(stylesheet);
   const section = document.querySelector('#web-lab');
   if (!section) return;
@@ -25,6 +25,22 @@
   ];
   const copy = isEnglish ? { number: 'DEMO', status: 'Interactive preview. Use the project tabs to switch between experiments.', showPhone: 'Preview at phone width', showWide: 'Return to full-width preview' } : { number: 'ДЕМО', status: 'Интерактивный предпросмотр. Переключайтесь между проектами во вкладках.', showPhone: 'Предпросмотр в ширине телефона', showWide: 'Вернуть широкое окно предпросмотра' };
   const tabs = section.querySelector('[role="tablist"]');
+  const mobilePicker = document.createElement('label');
+  mobilePicker.className = 'lab-mobile-picker';
+  const mobilePickerCaption = document.createElement('span');
+  mobilePickerCaption.className = 'lab-mobile-picker-caption';
+  mobilePickerCaption.textContent = isEnglish ? 'CHOOSE A PROJECT' : 'ВЫБЕРИТЕ ПРОЕКТ';
+  const projectSelect = document.createElement('select');
+  projectSelect.id = 'lab-mobile-project';
+  projectSelect.setAttribute('aria-label', isEnglish ? 'Choose a project to preview' : 'Выберите проект для предпросмотра');
+  projects.forEach((project, index) => {
+    const option = document.createElement('option');
+    option.value = String(index);
+    option.textContent = `${String(index + 1).padStart(2, '0')} · ${project.name}`;
+    projectSelect.append(option);
+  });
+  mobilePicker.append(mobilePickerCaption, projectSelect);
+  tabs.before(mobilePicker);
   const frame = section.querySelector('iframe');
   const title = section.querySelector('h3[data-lab-title]');
   const windowTitle = section.querySelector('[data-lab-window]');
@@ -57,6 +73,7 @@
       tab.setAttribute('aria-selected', String(index === activeIndex));
       tab.tabIndex = index === activeIndex ? 0 : -1;
     });
+    projectSelect.value = String(activeIndex);
     screen.setAttribute('aria-labelledby', `lab-tab-${project.id}`);
     title.textContent = project.name;
     windowTitle.textContent = project.name;
@@ -96,6 +113,7 @@
     });
     tabs.append(tab);
   });
+  projectSelect.addEventListener('change', () => { activeIndex = Number(projectSelect.value); render(); });
   section.querySelector('[data-lab-reload]').addEventListener('click', () => { frame.src = 'about:blank'; requestAnimationFrame(() => { frame.src = projects[activeIndex].url; }); });
   viewToggle.addEventListener('click', () => {
     phoneMode = !phoneMode;
