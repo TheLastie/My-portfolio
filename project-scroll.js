@@ -54,7 +54,7 @@
 
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
-  stylesheet.href = new URL('project-scroll.css?v=9', document.currentScript.src).href;
+  stylesheet.href = new URL('project-scroll.css?v=10', document.currentScript.src).href;
   document.head.append(stylesheet);
 
   const pageHeader = document.querySelector('.header');
@@ -158,6 +158,33 @@
   }).filter(Boolean);
 
   if (!articles.length) return;
+  const compactQuery = window.matchMedia('(max-width: 720px)');
+  if (compactQuery.matches) {
+    // Phones: a plain, stable list. No sticky rail, no iframe moving between cards on scroll.
+    section.classList.add('lab-compact');
+    const frame = main.querySelector('iframe');
+    if (frame) frame.removeAttribute('src');
+    main.remove();
+    tabs.closest('.lab-rail')?.remove();
+    const base = isEnglish ? '/en/projects/' : '/projects/';
+    articles.forEach(({ project, article, slot }) => {
+      slot.remove();
+      const link = document.createElement('a');
+      link.className = 'lab-project-card-shot';
+      link.href = `${base}${project.id}/`;
+      link.setAttribute('aria-label', (isEnglish ? 'Details: ' : 'Подробнее: ') + (article.querySelector('h3')?.textContent || project.id));
+      const image = document.createElement('img');
+      image.src = `/projects/img/${project.id}.webp`;
+      image.alt = '';
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      link.append(image);
+      article.append(link);
+    });
+    compactQuery.addEventListener('change', () => location.reload());
+    return;
+  }
+  compactQuery.addEventListener('change', () => location.reload());
   const originalMeta = main.querySelector('.lab-meta');
   if (originalMeta) originalMeta.hidden = true;
   const preview = main.querySelector('#lab-preview');

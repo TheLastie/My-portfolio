@@ -126,3 +126,12 @@
   .lab-tabs .lab-tab-domain,.lab-tabs .lab-tab-arrow{display:none}
   .lab-project-step{scroll-margin-top:calc(var(--lab-sticky-offset,84px) + 76px)}
 }
+
+/* Phone layout: stable card list, no scroll-driven preview */
+.lab-compact .lab-shell{display:block}
+.lab-compact .lab-project-list{display:grid;gap:18px}
+.lab-compact .lab-project-step{position:static;scroll-margin-top:16px;padding:18px 0 22px;border-top:1px solid var(--lab-line)}
+.lab-compact .lab-project-card-shot{display:block;margin-top:14px;border:1px solid var(--lab-line);border-radius:8px;overflow:hidden;background:var(--lab-surface)}
+.lab-compact .lab-project-card-shot img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.lab-compact .lab-project-actions{display:flex;flex-wrap:wrap;gap:10px}
+.lab-compact .lab-project-actions a{min-height:44px;display:inline-flex;align-items:center}
